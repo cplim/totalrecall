@@ -16,6 +16,7 @@ public class Game {
     private String id;
     private int width;
     private int height;
+    private GameStatistics gameStatistics;
 
     public Game(HttpClient client, ObjectMapper mapper) {
         this.client = client;
@@ -27,14 +28,15 @@ public class Game {
         return new Game(new HttpClient(), new ObjectMapper());
     }
 
-    public void start() {
+    public void start(String name, String email) {
         System.out.println("Calling start");
+        this.gameStatistics = new GameStatistics();
         PostMethod httpPost = null;
         GetMethod httpGet = null;
         try {
             httpPost = new PostMethod(String.format("http://totalrecall.99cluster.com/games/"));
-            httpPost.addParameter("name", "cp");
-            httpPost.addParameter("email", "cheenpin.lim@gmail.com");
+            httpPost.addParameter("name", name);
+            httpPost.addParameter("email", email);
             final int statusCode = client.executeMethod(httpPost);
 
             if(statusCode != 302) {
@@ -69,6 +71,7 @@ public class Game {
             httpGet = new GetMethod(String.format("http://totalrecall.99cluster.com/games/%s/cards/%d,%d", id, card.getX(), card.getY()));
             client.executeMethod(httpGet);
             card.setValue(httpGet.getResponseBodyAsString());
+            gameStatistics.incrementGuess();
         } catch (IOException e) {
             throw new RuntimeException("Failed to make a guess!", e);
         } finally {
@@ -89,7 +92,9 @@ public class Game {
             httpPost.addParameter("y2", String.valueOf(second.getY()));
             client.executeMethod(httpPost);
 
-            return mapper.readValue(httpPost.getResponseBodyAsString(), Result.class);
+            final Result result = mapper.readValue(httpPost.getResponseBodyAsString(), Result.class);
+            result.setStatistic(gameStatistics);
+            return result;
         } catch (IOException e) {
             throw new RuntimeException("Failed to make a guess!", e);
         } finally {

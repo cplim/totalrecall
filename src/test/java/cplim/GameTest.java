@@ -56,7 +56,7 @@ public class GameTest {
         whenNew(GetMethod.class).withParameterTypes(String.class).withArguments(redirectHeader.getValue()).thenReturn(httpGet);
         when(httpGet.getResponseBodyAsString()).thenReturn(jsonData);
 
-        game.start();
+        game.start("name", "email@email.com");
 
         assertThat(game.getId(), is(id));
         assertThat(game.getWidth(), is(width));
