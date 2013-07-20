@@ -23,7 +23,7 @@ public class GameSolver {
         }
     }
 
-    public void solve() {
+    public Result solve() {
 
         if(allCards.size() % 2 != 0 ) {
             throw new IllegalArgumentException("Uneven number of cards. The cards will never match!");
@@ -45,14 +45,13 @@ public class GameSolver {
 
         // guess all known pairs bar one
         Map.Entry<String, Card[]> endPair = pairs.entrySet().iterator().next();
-        pairs.entrySet().iterator().remove();
+        pairs.remove(endPair.getKey());
         for(Card[] pair : pairs.values()) {
             game.guess(pair[0]);
             game.guess(pair[1]);
         }
 
         // end the game with the remaining pair
-        game.guess(endPair.getValue()[0]);
-        game.guess(endPair.getValue()[1]);
+        return game.end(endPair.getValue()[0], endPair.getValue()[1]);
     }
 }

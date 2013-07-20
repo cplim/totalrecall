@@ -1,5 +1,6 @@
 package cplim;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -42,11 +43,18 @@ public class GameTest {
                 "id: \"" + id + "\",\n" +
                 "height: " + height + "\n" +
                 "}";
-        // mock http interaction
+
+        // mock http post
         PostMethod httpPost = mock(PostMethod.class);
         whenNew(PostMethod.class).withParameterTypes(String.class).withArguments(isA(String.class)).thenReturn(httpPost);
-        when(httpClient.executeMethod(httpPost)).thenReturn(HttpStatus.SC_OK);
-        when(httpPost.getResponseBodyAsString()).thenReturn(jsonData);
+        when(httpClient.executeMethod(httpPost)).thenReturn(302);
+        Header redirectHeader = new Header("Location", "http://host/redirect");
+        when(httpPost.getResponseHeader("Location")).thenReturn(redirectHeader);
+
+        // mock http get (redirect)
+        GetMethod httpGet = mock(GetMethod.class);
+        whenNew(GetMethod.class).withParameterTypes(String.class).withArguments(redirectHeader.getValue()).thenReturn(httpGet);
+        when(httpGet.getResponseBodyAsString()).thenReturn(jsonData);
 
         game.start();
 
@@ -54,7 +62,10 @@ public class GameTest {
         assertThat(game.getWidth(), is(width));
         assertThat(game.getHeight(), is(height));
 
-        verify(httpPost, times(1)).getResponseBodyAsString();
+        verify(httpPost, times(1)).getResponseHeader(anyString());
+        verify(httpPost, times(1)).releaseConnection();
+        verify(httpGet, times(1)).getResponseBodyAsString();
+        verify(httpGet, times(1)).releaseConnection();
     }
 
     @Test
@@ -70,6 +81,7 @@ public class GameTest {
         assertThat(card.getValue(), is("c"));
 
         verify(httpGet, times(1)).getResponseBodyAsString();
+        verify(httpGet, times(1)).releaseConnection();
     }
 
     @Test
@@ -91,12 +103,13 @@ public class GameTest {
         assertThat(result.isSuccess(), is(false));
 
         verify(httpPost, times(1)).getResponseBodyAsString();
+        verify(httpPost, times(1)).releaseConnection();
     }
 
     @Test
     public void shouldEndGameSuccessfully() throws Exception {
         final String jsonData = "{\n" +
-                "message: \"Success!\",\n" +
+                "message: \"You WON!\",\n" +
                 "success: true\n" +
                 "}";
         final Card first = new Card(1,1);
@@ -112,6 +125,7 @@ public class GameTest {
         assertThat(result.isSuccess(), is(true));
 
         verify(httpPost, times(1)).getResponseBodyAsString();
+        verify(httpPost, times(1)).releaseConnection();
     }
 
 }
