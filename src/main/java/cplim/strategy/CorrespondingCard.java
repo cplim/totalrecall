@@ -8,13 +8,14 @@ public class CorrespondingCard implements Predicate<Card> {
 
     public CorrespondingCard(Card reference) {
         this.reference = reference;
-        if(reference.getValue() == null) {
-            throw new IllegalArgumentException("Reference card("+reference.getX()+","+reference.getY()+") cannot have a null value");
-        }
     }
 
     @Override
     public boolean apply(Card card) {
+        if(reference == null || reference.getValue() == null) {
+            return false;
+        }
+
         return reference.getValue().equals(card.getValue());
     }
 }
