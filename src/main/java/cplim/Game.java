@@ -53,7 +53,7 @@ public class Game {
             width = Integer.valueOf(gameData.get("width").toString());
             height = Integer.valueOf(gameData.get("height").toString());
         } catch (IOException e) {
-            throw new RuntimeException("Failed to make a guess!", e);
+            throw new RuntimeException("Failed to make a reveal!", e);
         } finally {
             if(httpPost != null) {
                 httpPost.releaseConnection();
@@ -64,8 +64,8 @@ public class Game {
         }
     }
 
-    public void guess(Card card) {
-        System.out.println("Calling guess");
+    public void reveal(Card card) {
+        System.out.println("Calling reveal");
         GetMethod httpGet = null;
         try {
             httpGet = new GetMethod(String.format("http://totalrecall.99cluster.com/games/%s/cards/%d,%d", id, card.getX(), card.getY()));
@@ -73,7 +73,7 @@ public class Game {
             card.setValue(httpGet.getResponseBodyAsString());
             gameStatistics.incrementGuess();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to make a guess!", e);
+            throw new RuntimeException("Failed to reveal card!", e);
         } finally {
             if(httpGet != null) {
                 httpGet.releaseConnection();
@@ -96,7 +96,7 @@ public class Game {
             result.setStatistic(gameStatistics);
             return result;
         } catch (IOException e) {
-            throw new RuntimeException("Failed to make a guess!", e);
+            throw new RuntimeException("Failed to make a reveal!", e);
         } finally {
             if(httpPost != null) {
                 httpPost.releaseConnection();

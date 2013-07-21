@@ -76,7 +76,7 @@ public class GameTest {
         when(httpGet.getResponseBodyAsString()).thenReturn("c");
 
         Card card = new Card(0,1);
-        game.guess(card);
+        game.reveal(card);
 
         assertThat(card.getValue(), is("c"));
 

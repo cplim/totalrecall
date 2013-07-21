@@ -3,7 +3,7 @@ package cplim;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class Card implements Comparable<Card> {
+public class Card {
     private final int x;
     private final int y;
     private String value;
@@ -37,10 +37,5 @@ public class Card implements Comparable<Card> {
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    @Override
-    public int compareTo(Card other) {
-        return this.value.compareTo(other.value);
     }
 }

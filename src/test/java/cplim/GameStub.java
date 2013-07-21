@@ -17,7 +17,7 @@ public class GameStub extends Game {
     }
 
     @Override
-    public void guess(Card card) {
+    public void reveal(Card card) {
         card.setValue(DATA[card.getX()][card.getY()]);
     }
 

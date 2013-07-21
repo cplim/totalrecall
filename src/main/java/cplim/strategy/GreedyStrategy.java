@@ -1,10 +1,13 @@
 package cplim.strategy;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 import cplim.Card;
 import cplim.Game;
 import cplim.Result;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GreedyStrategy implements GameStrategy {
     private final Game game;
@@ -25,38 +28,31 @@ public class GreedyStrategy implements GameStrategy {
         int solved = 0; // keep count of number of cards matched
         while(solved < limit) {
 
-            // make a guess
-            final Card[] pair = pickPair();
-            for(Card card: pair) {
-                game.guess(card);
-            }
+            // pick a card and turn it over
+            final Card firstCard = firstPick();
+            game.reveal(firstCard);
+            final Card secondCard = secondPick(firstCard);
+            game.reveal(secondCard);
 
             // only add the cards back into the known cards if they don't match
-            if(pair[0].getValue().equals(pair[1].getValue())) {
+            if(firstCard.getValue().equals(secondCard.getValue())) {
                 solved += 2;
             } else {
-                updateKnownCards(pair);
+                turnOverCards(firstCard, secondCard);
             }
         }
 
-        return game.end(knownCards.get(0), knownCards.get(1));
+        List<Card> remainder = new ArrayList<Card>(unKnownCards);
+        remainder.addAll(knownCards);
+        return game.end(remainder.get(0), remainder.get(1));
     }
 
-    private void updateKnownCards(Card[] cards) {
-        knownCards.addAll(Arrays.asList(cards));
-        Collections.sort(knownCards);
+    private void turnOverCards(Card firstCard, Card secondCard) {
+        knownCards.add(firstCard);
+        knownCards.add(secondCard);
     }
 
-    private Card[] pickPair() {
-        Card[] pair = new Card[2];
-
-        pair[0] = pickFirst();
-        pair[1] = pickSecond();
-
-        return pair;
-    }
-
-    private Card pickFirst() {
+    private Card firstPick() {
         // preference unknown first
         if(!unKnownCards.isEmpty()) {
             return unKnownCards.remove(0);
@@ -66,12 +62,23 @@ public class GreedyStrategy implements GameStrategy {
         return knownCards.remove(0);
     }
 
-    private Card pickSecond() {
+    /**
+     * @param firstCard is a card with a known value!
+     * @return secondCard to turn over
+     */
+    private Card secondPick(Card firstCard) {
         // preference known first
         if(!knownCards.isEmpty()) {
-            return knownCards.remove(0);
+            // by default, if the known cards contains a card with the same value, return it (the point of the game!)
+            CorrespondingCard matchingFirstCard = new CorrespondingCard(firstCard);
+            final Optional<Card> match = Iterables.tryFind(knownCards, matchingFirstCard);
+            final Card secondCard = match.or(knownCards.get(0)); // if there are no matches, just get a known card
+            knownCards.remove(secondCard);
+
+            return secondCard;
         }
 
+        // otherwise use unknown
         return unKnownCards.remove(0);
     }
 }

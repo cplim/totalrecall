@@ -26,7 +26,7 @@ public class SimpleStrategy implements GameStrategy {
 
         // find value for each card
         for(Card card: allCards) {
-            game.guess(card);
+            game.reveal(card);
 
             Card[] pair = pairs.get(card.getValue());
             if(pair == null) {
@@ -38,12 +38,12 @@ public class SimpleStrategy implements GameStrategy {
             }
         }
 
-        // guess all known pairs bar one
+        // reveal all known pairs bar one
         Map.Entry<String, Card[]> endPair = pairs.entrySet().iterator().next();
         pairs.remove(endPair.getKey());
         for(Card[] pair : pairs.values()) {
-            game.guess(pair[0]);
-            game.guess(pair[1]);
+            game.reveal(pair[0]);
+            game.reveal(pair[1]);
         }
 
         // end the game with the remaining pair
