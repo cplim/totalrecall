@@ -1,26 +1,21 @@
-package cplim;
+package cplim.strategy;
 
-import java.util.ArrayList;
+import cplim.Card;
+import cplim.Game;
+import cplim.Result;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GameSolver {
+public class SimpleStrategy implements GameStrategy {
     private Game game;
     private Map<String, Card[]> pairs = new HashMap<String, Card[]>();
-    private List<Card> allCards = new ArrayList<Card>();
+    private List<Card> allCards;
 
-    public GameSolver(Game game) {
+    public SimpleStrategy(Game game) {
         this.game = game;
-        constructUnknownCards();
-    }
-
-    private void constructUnknownCards() {
-        for(int x=0;x<game.getWidth();x++) {
-            for(int y=0;y<game.getHeight();y++) {
-                allCards.add(new Card(x, y));
-            }
-        }
+        this.allCards = StrategyUtil.constructCards(game.getWidth(), game.getHeight());
     }
 
     public Result solve() {

@@ -16,7 +16,7 @@ public class Game {
     private String id;
     private int width;
     private int height;
-    private GameStatistics gameStatistics;
+    private GameStatistics gameStatistics = new GameStatistics();
 
     public Game(HttpClient client, ObjectMapper mapper) {
         this.client = client;
