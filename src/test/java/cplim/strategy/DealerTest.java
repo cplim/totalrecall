@@ -12,6 +12,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.junit.Assert.fail;
 
 public class DealerTest {
 
@@ -20,18 +21,6 @@ public class DealerTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenTotalCardsAreUneven() {
         dealer = new Dealer(Arrays.asList(new Card(0, 1)));
-    }
-
-    @Test
-    public void dealersMustShareCards() {
-        final Card card1 = new Card(0,0);
-        final Card card2 = new Card(0,1);
-        final List<Card> cards = Arrays.asList(card1, card2);
-
-        Dealer d1 = new Dealer(cards);
-        Dealer d2 = new Dealer(cards);
-
-        assertThat(d1.unRevealedCards, sameInstance(d2.unRevealedCards));
     }
 
     @Test
@@ -62,6 +51,8 @@ public class DealerTest {
 
         final Card picked = dealer.pick(x2);
         assertThat(picked, sameInstance(x1));
+
+        fail("Will randomly fail as the picked cards will be randomly from revealed/unrevealed lists");
     }
 
     @Test
