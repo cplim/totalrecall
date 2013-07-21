@@ -21,7 +21,9 @@ public class GreedyStrategy implements GameStrategy {
             throw new IllegalArgumentException("Uneven number of cards. The cards will never match!");
         }
 
-        while(unKnownCards.size() != 2) {
+        int limit = unKnownCards.size() - 2; // maximum number of cards to have picked
+        int solved = 0; // keep count of number of cards matched
+        while(solved < limit) {
 
             // make a guess
             final Card[] pair = pickPair();
@@ -29,11 +31,15 @@ public class GreedyStrategy implements GameStrategy {
                 game.guess(card);
             }
 
-            // add the cards back to the known list
-            updateKnownCards(pair);
+            // only add the cards back into the known cards if they don't match
+            if(pair[0].getValue().equals(pair[1].getValue())) {
+                solved += 2;
+            } else {
+                updateKnownCards(pair);
+            }
         }
 
-        return game.end(unKnownCards.get(0), unKnownCards.get(1));
+        return game.end(knownCards.get(0), knownCards.get(1));
     }
 
     private void updateKnownCards(Card[] cards) {
@@ -45,7 +51,7 @@ public class GreedyStrategy implements GameStrategy {
         Card[] pair = new Card[2];
 
         pair[0] = pickFirst();
-        pair[1] = pickSecond(pair[0]);
+        pair[1] = pickSecond();
 
         return pair;
     }
@@ -60,17 +66,12 @@ public class GreedyStrategy implements GameStrategy {
         return knownCards.remove(0);
     }
 
-    private Card pickSecond(Card firstPick) {
-        List<Card> list = new ArrayList<Card>();
-
+    private Card pickSecond() {
         // preference known first
         if(!knownCards.isEmpty()) {
-            list.addAll(knownCards);
-        } else {
-            list.addAll(unKnownCards);
+            return knownCards.remove(0);
         }
 
-        list.remove(firstPick); // can't pick card at the same position
-        return list.remove(0); // FIXME: Remove from the known/unknown, not the temp list.
+        return unKnownCards.remove(0);
     }
 }
