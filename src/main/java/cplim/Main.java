@@ -4,7 +4,7 @@ import cplim.strategy.GameStrategy;
 import cplim.strategy.GreedyStrategy;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String... args) {
         Game game = Game.newGame();
         game.start("cp", "cheenpin.lim@gmail.com");
         GameStrategy solver = new GreedyStrategy(game);

@@ -7,12 +7,9 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.junit.Assert.fail;
 
 public class DealerTest {
 
@@ -51,8 +48,6 @@ public class DealerTest {
 
         final Card picked = dealer.pick(x2);
         assertThat(picked, sameInstance(x1));
-
-        fail("Will randomly fail as the picked cards will be randomly from revealed/unrevealed lists");
     }
 
     @Test
