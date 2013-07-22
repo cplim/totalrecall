@@ -24,20 +24,20 @@ public class Dealer {
 
     public Card pick(Card reference) {
         final Behaviour behaviour = reference == null ? firstPickBehaviour : secondPickBehaviour;
-        switch(behaviour.preference()) {
-            case REVEALED:
-                // prefer revealed card
-                if(!revealedCards.isEmpty()) {
-                    return pickRevealedCard(reference);
-                }
-                return pickUnRevealedCard();
-            default:
-                // prefer unrevealed card
-                if(!unRevealedCards.isEmpty()) {
-                    return pickUnRevealedCard();
-                }
+
+        if(behaviour.preference() == Behaviour.CardPreference.REVEALED) {
+            // prefer revealed card iff it isn't empty
+            if(!revealedCards.isEmpty()) {
                 return pickRevealedCard(reference);
+            }
+            return pickUnRevealedCard();
         }
+
+        // prefer unrevealed card iff it isn't empty
+        if(!unRevealedCards.isEmpty()) {
+            return pickUnRevealedCard();
+        }
+        return pickRevealedCard(reference);
     }
 
     private Card pickUnRevealedCard() {
