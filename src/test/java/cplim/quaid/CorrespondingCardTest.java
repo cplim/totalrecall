@@ -1,8 +1,9 @@
-package cplim.strategy;
+package cplim.quaid;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import cplim.Card;
+import cplim.quaid.CorrespondingCard;
 import org.junit.Before;
 import org.junit.Test;
 

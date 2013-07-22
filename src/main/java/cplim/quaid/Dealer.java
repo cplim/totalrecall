@@ -1,4 +1,4 @@
-package cplim.strategy;
+package cplim.quaid;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
@@ -10,22 +10,20 @@ import java.util.List;
 public class Dealer {
     final List<Card> unRevealedCards = new ArrayList<Card>();
     final List<Card> revealedCards = new ArrayList<Card>();
-    final Behaviour firstPickBehaviour;
-    final Behaviour secondPickBehaviour;
+    final Approach approach;
 
     public Dealer(List<Card> newCards) {
         this.unRevealedCards.addAll(newCards);
         if(newCards.size() % 2 != 0) {
             throw new IllegalArgumentException("Uneven number of cards. The cards will never match!");
         }
-        firstPickBehaviour = new Behaviour(0.25f);
-        secondPickBehaviour = new Behaviour(0.75f);
+        approach = new Approach(0.25f, 0.75f);
     }
 
     public Card pick(Card reference) {
-        final Behaviour behaviour = reference == null ? firstPickBehaviour : secondPickBehaviour;
+        final CardPreference preference = (reference == null ? approach.firstPickPreference() : approach.secondPickPreference());
 
-        if(behaviour.preference() == Behaviour.CardPreference.REVEALED) {
+        if(preference == CardPreference.REVEALED) {
             // prefer revealed card iff it isn't empty
             if(!revealedCards.isEmpty()) {
                 return pickRevealedCard(reference);

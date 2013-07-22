@@ -3,6 +3,7 @@ package cplim.strategy;
 import cplim.Card;
 import cplim.Game;
 import cplim.Result;
+import cplim.quaid.Dealer;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package cplim.strategy;
+package cplim.quaid;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +24,8 @@ public class BehaviourTest {
         behaviour = new Behaviour(random, bias);
         when(random.nextFloat()).thenReturn(0.1f);
 
-        final Behaviour.CardPreference preference = behaviour.preference();
-        assertThat(preference, is(Behaviour.CardPreference.REVEALED));
+        final CardPreference preference = behaviour.preference();
+        assertThat(preference, is(CardPreference.REVEALED));
 
         verify(random).nextFloat();
     }
@@ -36,8 +36,8 @@ public class BehaviourTest {
         behaviour = new Behaviour(random, bias);
         when(random.nextFloat()).thenReturn(0.4f);
 
-        final Behaviour.CardPreference preference = behaviour.preference();
-        assertThat(preference, is(Behaviour.CardPreference.UNREVEALED));
+        final CardPreference preference = behaviour.preference();
+        assertThat(preference, is(CardPreference.UNREVEALED));
 
         verify(random).nextFloat();
     }

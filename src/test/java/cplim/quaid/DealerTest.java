@@ -1,4 +1,4 @@
-package cplim.strategy;
+package cplim.quaid;
 
 import com.google.common.collect.Lists;
 import cplim.Card;

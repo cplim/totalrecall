@@ -1,13 +1,8 @@
-package cplim.strategy;
+package cplim.quaid;
 
 import java.util.Random;
 
 public class Behaviour {
-
-    public static enum CardPreference {
-        REVEALED,
-        UNREVEALED;
-    }
 
     private final Random random;
     private final float revealedBias;
