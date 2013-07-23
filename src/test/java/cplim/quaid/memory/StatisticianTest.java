@@ -1,14 +1,14 @@
 package cplim.quaid.memory;
 
+import cplim.quaid.Approach;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class StatisticianTest {
@@ -23,9 +23,11 @@ public class StatisticianTest {
         statistician = new Statistician(file);
     }
 
-    @Test(expected = FileNotFoundException.class)
-    public void shouldThrowExceptionOnNonExistantFile() throws IOException {
-        statistician = new Statistician(new File("doesnotexist.txt"));
+    @Test
+    public void shouldCreateFileIfItDoesnotExist() throws IOException {
+        final File file = new File(FileUtils.getTempDirectory(), "statistician-test.txt");
+        statistician = new Statistician(file);
+        assertThat(file.exists(), is(true));
     }
 
     @Test
@@ -52,5 +54,11 @@ public class StatisticianTest {
         String contents = FileUtils.readFileToString(file);
         assertThat(contents, containsString("99999"));
         assertThat(contents, containsString("11"));
+    }
+
+    @Test
+    public void shouldDetermineBestApproach() {
+        final Approach approach = statistician.recommendApproachFromStatistics();
+        assertThat(approach, not(nullValue()));
     }
 }

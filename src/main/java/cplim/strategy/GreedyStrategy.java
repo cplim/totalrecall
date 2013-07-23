@@ -3,22 +3,29 @@ package cplim.strategy;
 import cplim.Card;
 import cplim.Game;
 import cplim.Result;
+import cplim.quaid.Approach;
 import cplim.quaid.Dealer;
+import cplim.quaid.memory.Outcome;
+import cplim.quaid.memory.Statistician;
 
 import java.util.List;
 
 public class GreedyStrategy implements GameStrategy {
     private final Game game;
-    private List<Card> unKnownCards;
-    private Dealer dealer;
+    private final Statistician statistician;
+    private final List<Card> unKnownCards;
+    private final Dealer dealer;
+    private final Approach approach;
 
-    public GreedyStrategy(Game game) {
+    public GreedyStrategy(Game game, Statistician statistician) {
         this.game = game;
+        this.statistician = statistician;
         this.unKnownCards = StrategyUtil.constructCards(game.getWidth(), game.getHeight());
-        dealer = new Dealer(unKnownCards);
+        this.approach = statistician.recommendApproachFromStatistics();
+        this.dealer = new Dealer(unKnownCards, approach);
     }
 
-    public Result solve() {
+    public Result solve() throws Exception {
         if(unKnownCards.size() % 2 != 0 ) {
             throw new IllegalArgumentException("Uneven number of cards. The cards will never match!");
         }
@@ -38,7 +45,16 @@ public class GreedyStrategy implements GameStrategy {
             }
         }
 
+        // end the game
         List<Card> remainder = dealer.remainingCards();
-        return game.end(remainder.get(0), remainder.get(1));
+        final Result result = game.end(remainder.get(0), remainder.get(1));
+
+        // statistician will record statistic
+        statistician.record(new Outcome(
+            result.getStatistic().numberOfGuesses(),
+            approach.getFirstPickBias(),
+            approach.getSecondPickBias()
+        ));
+        return result;
     }
 }

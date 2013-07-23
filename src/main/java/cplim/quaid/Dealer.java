@@ -12,12 +12,12 @@ public class Dealer {
     final List<Card> revealedCards = new ArrayList<Card>();
     final Approach approach;
 
-    public Dealer(List<Card> newCards) {
+    public Dealer(List<Card> newCards, Approach approach) {
         this.unRevealedCards.addAll(newCards);
         if(newCards.size() % 2 != 0) {
             throw new IllegalArgumentException("Uneven number of cards. The cards will never match!");
         }
-        approach = new Approach(0.25f, 0.75f);
+        this.approach = approach;
     }
 
     public Card pick(Card reference) {

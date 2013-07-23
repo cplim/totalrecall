@@ -65,7 +65,6 @@ public class Game {
     }
 
     public void reveal(Card card) {
-        System.out.println("Calling reveal ("+card.getX()+","+card.getY()+")");
         GetMethod httpGet = null;
         try {
             httpGet = new GetMethod(String.format("http://totalrecall.99cluster.com/games/%s/cards/%d,%d", id, card.getX(), card.getY()));
