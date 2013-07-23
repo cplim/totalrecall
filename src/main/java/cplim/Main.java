@@ -16,7 +16,9 @@ public class Main {
         Statistician statistician = new Statistician(memory);
 
         // run the game and then print out the result each time
-        for(int i=0;i<10;i++) {
+        int runs = Integer.valueOf(args[0]);
+        System.out.println("Going to solve game "+runs+" times");
+        for(int i=0;i<runs;i++) {
             Game game = Game.newGame();
             game.start("cp", "cheenpin.lim@gmail.com");
             GameStrategy solver = new GreedyStrategy(game, statistician);
